@@ -5,41 +5,39 @@ from datetime import datetime
 import s3fs
 
 
-access_key = "FEcFo1rTFXCcBKhJmKjwyMkGX"
-access_secret = "FZF87oWSaWaPYQCKUvNcXI4KFzylY4QLyZOQfN8T4uKzC4VJsU"
-consumer_key = "1848381142199681025-aTM1MZq6XlCclISMLiX8UXsATwyHVz"
-consumer_secret = "ofNtjt5Px1iQ2OzgaeHnC1G0cHNWiLbu4TsPzRdi6uYY3"
+def run_twitter_etl():
 
-# Twitter authentication
-auth = tweepy.OAuthHandler(access_key, access_secret)
-auth.set_access_token(consumer_key, consumer_secret)
+    access_key = ""
+    access_secret = ""
+    consumer_key = ""
+    consumer_secret = ""
 
-# # # Creating an API object
-api = tweepy.API(auth)
+    # Twitter authentication
+    auth = tweepy.OAuthHandler(access_key, access_secret)
+    auth.set_access_token(consumer_key, consumer_secret)
 
-tweets = api.user_timeline(screen_name='@elonmusk',
-                           # 200 is the maximum allowed count
-                           count=5,
-                           include_rts=False,
-                           # Necessary to keep full_text
-                           # otherwise only the first 140 words are extracted
-                           tweet_mode='extended'
-                           )
+    # # # Creating an API object
+    api = tweepy.API(auth)
+    tweets = api.user_timeline(screen_name='@elonmusk',
+                               # 200 is the maximum allowed count
+                               count=200,
+                               include_rts=False,
+                               # Necessary to keep full_text
+                               # otherwise only the first 140 words are extracted
+                               tweet_mode='extended'
+                               )
 
+    list = []
+    for tweet in tweets:
+        text = tweet._json["full_text"]
 
-print(tweets)
+        refined_tweet = {"user": tweet.user.screen_name,
+                         'text': text,
+                         'favorite_count': tweet.favorite_count,
+                         'retweet_count': tweet.retweet_count,
+                         'created_at': tweet.created_at}
 
-# list = []
-# for tweet in tweets:
-#     text = tweet._json["full_text"]
+        list.append(refined_tweet)
 
-#     refined_tweet = {"user": tweet.user.screen_name,
-#                      'text': text,
-#                      'favorite_count': tweet.favorite_count,
-#                      'retweet_count': tweet.retweet_count,
-#                      'created_at': tweet.created_at}
-
-#     list.append(refined_tweet)
-
-# df = pd.DataFrame(list)
-# df.to_csv('refined_tweets.csv')
+    df = pd.DataFrame(list)
+    df.to_csv('refined_tweets.csv')
