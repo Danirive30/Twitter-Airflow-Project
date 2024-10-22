@@ -141,8 +141,14 @@ airflow webserver --port 8080
 
 2. **Verificar y ejecutar el DAG**:
 
-Desde la interfaz web de Airflow, puedes verificar y ejecutar el DAG manualmente o esperar a que se ejecute de acuerdo a su programación.
+- Desde la interfaz web de Airflow, puedes verificar y ejecutar el DAG manualmente o esperar a que se ejecute de acuerdo a su programación.
 
 3. **Revisar los datos**:
+
+- Los datos transformados se almacenarán en un archivo CSV (`refined_tweets.csv`). Opcionalmente, puedes cargar este archivo a Amazon S3 si configuras un bucket en tu cuenta de AWS.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT.
 
 # Twitter-Airflow-Project
